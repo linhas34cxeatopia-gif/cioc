@@ -624,10 +624,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
+    paddingVertical: Theme.spacing.lg,
     borderTopWidth: 1,
     borderTopColor: Theme.colors.border,
-    backgroundColor: '#fff',
+    backgroundColor: Theme.colors.backgroundSecondary,
   },
   logoutText: {
     fontSize: 16,

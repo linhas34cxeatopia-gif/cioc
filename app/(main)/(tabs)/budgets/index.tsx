@@ -281,5 +281,5 @@ const styles = StyleSheet.create({
   clientText: { marginTop: 6, fontWeight: '600', color: Theme.colors.text },
   subText: { color: Theme.colors.textSecondary },
   valueText: { fontWeight: '800', color: Theme.colors.text },
-  fab: { position: 'absolute', right: 20, bottom: 90, backgroundColor: Theme.colors.primary, width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center', elevation: 6 },
+  fab: { position: 'absolute', right: 20, bottom: 90, backgroundColor: Theme.colors.primary, width: Theme.layout.fabSize, height: Theme.layout.fabSize, borderRadius: Theme.layout.fabSize / 2, alignItems: 'center', justifyContent: 'center', ...Theme.shadows.xl },
 });

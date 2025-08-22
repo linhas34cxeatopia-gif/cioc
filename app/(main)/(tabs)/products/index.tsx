@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   badge: { marginTop: 6, flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#e65100', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 999 },
   badgeText: { color: '#fff', fontSize: 10, fontWeight: '700' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  fab: { position: 'absolute', bottom: 96, right: 20, width: 56, height: 56, borderRadius: 28, backgroundColor: Theme.colors.primary, justifyContent: 'center', alignItems: 'center', elevation: 6 },
+  fab: { position: 'absolute', bottom: 96, right: 20, width: Theme.layout.fabSize, height: Theme.layout.fabSize, borderRadius: Theme.layout.fabSize / 2, backgroundColor: Theme.colors.primary, justifyContent: 'center', alignItems: 'center', ...Theme.shadows.xl },
   catRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 2, marginBottom: 10, paddingRight: 6 },
   catChip: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 999, borderWidth: 1, borderColor: Theme.colors.border, backgroundColor: '#fff' },
   catChipActive: { borderColor: Theme.colors.primary, backgroundColor: '#fff7e6' },
