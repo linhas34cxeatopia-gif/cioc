@@ -6,18 +6,22 @@ import {
   ActivityIndicator,
   ViewStyle,
   TextStyle,
+  View,
 } from 'react-native';
 import { Theme } from '../../constants/Theme';
 
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'outline' | 'danger';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success';
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
   loading?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
+  icon?: React.ReactNode;
+  iconPosition?: 'left' | 'right';
+  fullWidth?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -29,11 +33,15 @@ export const Button: React.FC<ButtonProps> = ({
   loading = false,
   style,
   textStyle,
+  icon,
+  iconPosition = 'left',
+  fullWidth = false,
 }) => {
   const buttonStyle = [
     styles.base,
     styles[variant],
     styles[size],
+    fullWidth && styles.fullWidth,
     disabled && styles.disabled,
     style,
   ];
@@ -46,6 +54,47 @@ export const Button: React.FC<ButtonProps> = ({
     textStyle,
   ];
 
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <ActivityIndicator
+          color={getLoadingColor()}
+          size={size === 'small' ? 'small' : 'small'}
+        />
+      );
+    }
+
+    if (icon) {
+      return (
+        <View style={styles.contentWithIcon}>
+          {iconPosition === 'left' && (
+            <View style={styles.iconContainer}>{icon}</View>
+          )}
+          <Text style={textStyleCombined}>{title}</Text>
+          {iconPosition === 'right' && (
+            <View style={styles.iconContainer}>{icon}</View>
+          )}
+        </View>
+      );
+    }
+
+    return <Text style={textStyleCombined}>{title}</Text>;
+  };
+
+  const getLoadingColor = () => {
+    switch (variant) {
+      case 'outline':
+      case 'ghost':
+        return Theme.colors.primary;
+      case 'danger':
+        return Theme.colors.textLight;
+      case 'success':
+        return Theme.colors.textLight;
+      default:
+        return Theme.colors.textLight;
+    }
+  };
+
   return (
     <TouchableOpacity
       style={buttonStyle}
@@ -53,71 +102,81 @@ export const Button: React.FC<ButtonProps> = ({
       disabled={disabled || loading}
       activeOpacity={0.8}
     >
-      {loading ? (
-        <ActivityIndicator
-          color={variant === 'outline' ? Theme.colors.primary : Theme.colors.textLight}
-          size="small"
-        />
-      ) : (
-        <Text style={textStyleCombined}>{title}</Text>
-      )}
+      {renderContent()}
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: Theme.borderRadius.md,
+    borderRadius: Theme.borderRadius.lg,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    paddingHorizontal: Theme.spacing.lg,
+    ...Theme.shadows.small,
   },
   
-  // Variantes
+  // Variantes modernas
   primary: {
     backgroundColor: Theme.colors.primary,
-    ...Theme.shadows.small,
+    borderWidth: 0,
   },
   secondary: {
     backgroundColor: Theme.colors.secondary,
-    ...Theme.shadows.small,
+    borderWidth: 0,
   },
   outline: {
     backgroundColor: 'transparent',
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: Theme.colors.primary,
+    ...Theme.shadows.none,
+  },
+  ghost: {
+    backgroundColor: Theme.colors.primaryMuted,
+    borderWidth: 0,
+    ...Theme.shadows.none,
   },
   danger: {
     backgroundColor: Theme.colors.error,
-    ...Theme.shadows.small,
+    borderWidth: 0,
+  },
+  success: {
+    backgroundColor: Theme.colors.success,
+    borderWidth: 0,
   },
   
-  // Tamanhos
+  // Tamanhos modernos
   small: {
-    paddingHorizontal: Theme.spacing.md,
     paddingVertical: Theme.spacing.sm,
-    minHeight: 36,
+    paddingHorizontal: Theme.spacing.md,
+    minHeight: Theme.layout.buttonHeightSmall,
   },
   medium: {
-    paddingHorizontal: Theme.spacing.lg,
     paddingVertical: Theme.spacing.md,
-    minHeight: 48,
+    paddingHorizontal: Theme.spacing.lg,
+    minHeight: Theme.layout.buttonHeight,
   },
   large: {
-    paddingHorizontal: Theme.spacing.xl,
     paddingVertical: Theme.spacing.lg,
-    minHeight: 56,
+    paddingHorizontal: Theme.spacing.xl,
+    minHeight: Theme.layout.buttonHeightLarge,
   },
   
   // Estados
   disabled: {
-    opacity: 0.6,
+    opacity: 0.5,
+    ...Theme.shadows.none,
+  },
+  
+  fullWidth: {
+    width: '100%',
   },
   
   // Texto
   text: {
-    fontWeight: '600',
     textAlign: 'center',
+    fontWeight: '600',
   },
   
   primaryText: {
@@ -129,21 +188,41 @@ const styles = StyleSheet.create({
   outlineText: {
     color: Theme.colors.primary,
   },
+  ghostText: {
+    color: Theme.colors.primary,
+  },
   dangerText: {
+    color: Theme.colors.textLight,
+  },
+  successText: {
     color: Theme.colors.textLight,
   },
   
   smallText: {
-    fontSize: 14,
+    fontSize: Theme.typography.buttonSmall.fontSize,
+    lineHeight: Theme.typography.buttonSmall.lineHeight,
   },
   mediumText: {
-    fontSize: 16,
+    fontSize: Theme.typography.button.fontSize,
+    lineHeight: Theme.typography.button.lineHeight,
   },
   largeText: {
     fontSize: 18,
+    lineHeight: 22,
   },
   
   disabledText: {
-    opacity: 0.6,
+    opacity: 0.7,
+  },
+  
+  // Conteúdo com ícone
+  contentWithIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  
+  iconContainer: {
+    marginHorizontal: Theme.spacing.xs,
   },
 });

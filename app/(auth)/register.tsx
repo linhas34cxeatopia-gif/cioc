@@ -272,10 +272,12 @@ const styles = StyleSheet.create({
   
   formContainer: {
     backgroundColor: Theme.colors.backgroundSecondary,
-    borderRadius: Theme.borderRadius.xl,
+    borderRadius: Theme.borderRadius.xxl,
     padding: Theme.spacing.xl,
     marginBottom: Theme.spacing.lg,
-    ...Theme.shadows.medium,
+    ...Theme.shadows.large,
+    borderWidth: 1,
+    borderColor: Theme.colors.borderLight,
   },
   
   formTitle: {

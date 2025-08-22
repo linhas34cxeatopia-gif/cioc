@@ -7,7 +7,9 @@ import {
   ViewStyle,
   TextStyle,
   TextInputProps,
+  TouchableOpacity,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Theme } from '../../constants/Theme';
 
 interface InputProps extends TextInputProps {
@@ -17,6 +19,10 @@ interface InputProps extends TextInputProps {
   labelStyle?: TextStyle;
   inputStyle?: TextStyle;
   errorStyle?: TextStyle;
+  leftIcon?: string;
+  rightIcon?: string;
+  onRightIconPress?: () => void;
+  variant?: 'default' | 'filled' | 'outlined';
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -26,6 +32,10 @@ export const Input: React.FC<InputProps> = ({
   labelStyle,
   inputStyle,
   errorStyle,
+  leftIcon,
+  rightIcon,
+  onRightIconPress,
+  variant = 'filled',
   ...textInputProps
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -40,6 +50,20 @@ export const Input: React.FC<InputProps> = ({
     textInputProps.onBlur?.(undefined as any);
   };
 
+  const getInputContainerStyle = () => {
+    const baseStyle = [styles.inputContainer, styles[variant]];
+    
+    if (isFocused) {
+      baseStyle.push(styles.inputFocused);
+    }
+    
+    if (error) {
+      baseStyle.push(styles.inputError);
+    }
+    
+    return baseStyle;
+  };
+
   return (
     <View style={[styles.container, containerStyle]}>
       {label && (
@@ -48,18 +72,30 @@ export const Input: React.FC<InputProps> = ({
         </Text>
       )}
       
-      <TextInput
-        {...textInputProps}
-        style={[
-          styles.input,
-          isFocused && styles.inputFocused,
-          error && styles.inputError,
-          inputStyle,
-        ]}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        placeholderTextColor={Theme.colors.textSecondary}
-      />
+      <View style={getInputContainerStyle()}>
+        {leftIcon && (
+          <View style={styles.leftIconContainer}>
+            <Ionicons name={leftIcon as any} size={20} color={Theme.colors.textSecondary} />
+          </View>
+        )}
+        
+        <TextInput
+          {...textInputProps}
+          style={[styles.input, inputStyle]}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          placeholderTextColor={Theme.colors.textSecondary}
+        />
+        
+        {rightIcon && (
+          <TouchableOpacity 
+            style={styles.rightIconContainer}
+            onPress={onRightIconPress}
+          >
+            <Ionicons name={rightIcon as any} size={20} color={Theme.colors.textSecondary} />
+          </TouchableOpacity>
+        )}
+      </View>
       
       {error && (
         <Text style={[styles.error, errorStyle]}>
@@ -72,26 +108,49 @@ export const Input: React.FC<InputProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: Theme.spacing.md,
+    marginBottom: Theme.spacing.lg,
   },
   
   label: {
-    fontSize: 16,
+    fontSize: Theme.typography.bodySmall.fontSize,
     fontWeight: '600',
     color: Theme.colors.text,
-    marginBottom: Theme.spacing.xs,
+    marginBottom: Theme.spacing.sm,
+  },
+  
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: Theme.borderRadius.lg,
+    ...Theme.shadows.small,
+  },
+  
+  // Variantes
+  default: {
+    backgroundColor: Theme.colors.background,
+    borderWidth: 1,
+    borderColor: Theme.colors.border,
+  },
+  
+  filled: {
+    backgroundColor: Theme.colors.backgroundTertiary,
+    borderWidth: 1,
+    borderColor: Theme.colors.borderLight,
+  },
+  
+  outlined: {
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
+    borderColor: Theme.colors.border,
   },
   
   input: {
-    borderWidth: 2,
-    borderColor: Theme.colors.border,
-    borderRadius: Theme.borderRadius.md,
+    flex: 1,
     paddingHorizontal: Theme.spacing.md,
     paddingVertical: Theme.spacing.md,
-    fontSize: 16,
+    fontSize: Theme.typography.body.fontSize,
     color: Theme.colors.text,
-    backgroundColor: Theme.colors.background,
-    ...Theme.shadows.small,
+    minHeight: 48,
   },
   
   inputFocused: {
@@ -103,10 +162,19 @@ const styles = StyleSheet.create({
     borderColor: Theme.colors.error,
   },
   
+  leftIconContainer: {
+    paddingLeft: Theme.spacing.md,
+  },
+  
+  rightIconContainer: {
+    paddingRight: Theme.spacing.md,
+    padding: Theme.spacing.sm,
+  },
+  
   error: {
-    fontSize: 14,
+    fontSize: Theme.typography.caption.fontSize,
     color: Theme.colors.error,
     marginTop: Theme.spacing.xs,
-    marginLeft: Theme.spacing.xs,
+    marginLeft: Theme.spacing.sm,
   },
 });

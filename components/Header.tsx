@@ -3,6 +3,7 @@ import { DrawerActions, useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Theme } from '../constants/Theme';
 
 interface HeaderProps {
   title: string;
@@ -12,7 +13,13 @@ interface HeaderProps {
   notificationsCount?: number;
 }
 
-export default function Header({ title, showBackButton = false, onBackPress, onMenuPress, notificationsCount = 0 }: HeaderProps) {
+export default function Header({ 
+  title, 
+  showBackButton = false, 
+  onBackPress, 
+  onMenuPress, 
+  notificationsCount = 0 
+}: HeaderProps) {
   const navigation = useNavigation();
   const router = useRouter();
 
@@ -37,86 +44,98 @@ export default function Header({ title, showBackButton = false, onBackPress, onM
   };
 
   return (
-    <View style={styles.header}>
-      <StatusBar barStyle="light-content" backgroundColor="#000" />
-      <View style={styles.leftSection}>
-        {showBackButton ? (
-          <TouchableOpacity onPress={handleBackPress} style={styles.iconButton}>
-            <Ionicons name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity onPress={handleMenuPress} style={styles.iconButton}>
-            <Ionicons name="menu" size={24} color="white" />
-          </TouchableOpacity>
-        )}
-      </View>
-      
-      <Text style={styles.title}>{title}</Text>
-      
-      <View style={styles.rightSection}>
-        <TouchableOpacity onPress={handleNotificationsPress} style={styles.notificationButton}>
-          <Ionicons name="notifications" size={24} color="white" />
-          {notificationsCount > 0 && (
-            <View style={styles.notificationBadge}>
-              <Text style={styles.notificationBadgeText}>
-                {notificationsCount > 99 ? '99+' : notificationsCount}
-              </Text>
-            </View>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={styles.header.backgroundColor} />
+      <View style={styles.header}>
+        <View style={styles.leftSection}>
+          {showBackButton ? (
+            <TouchableOpacity onPress={handleBackPress} style={styles.iconButton}>
+              <Ionicons name="arrow-back" size={24} color="white" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={handleMenuPress} style={styles.iconButton}>
+              <Ionicons name="menu" size={24} color="white" />
+            </TouchableOpacity>
           )}
-        </TouchableOpacity>
+        </View>
+        
+        <View style={styles.centerSection}>
+          <Text style={styles.title}>{title}</Text>
+        </View>
+        
+        <View style={styles.rightSection}>
+          <TouchableOpacity onPress={handleNotificationsPress} style={styles.notificationButton}>
+            <Ionicons name="notifications" size={24} color="white" />
+            {notificationsCount > 0 && (
+              <View style={styles.notificationBadge}>
+                <Text style={styles.notificationBadgeText}>
+                  {notificationsCount > 99 ? '99+' : notificationsCount}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: Theme.colors.accent,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#000',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    paddingTop: 50, // Para status bar
+    backgroundColor: Theme.colors.accent,
+    paddingHorizontal: Theme.spacing.lg,
+    paddingVertical: Theme.spacing.md,
+    height: Theme.layout.headerHeight,
+    ...Theme.shadows.medium,
   },
   leftSection: {
-    flexDirection: 'row',
+    width: 40,
+    alignItems: 'flex-start',
+  },
+  centerSection: {
+    flex: 1,
     alignItems: 'center',
   },
   rightSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: 40,
+    alignItems: 'flex-end',
   },
   iconButton: {
-    padding: 8,
+    padding: Theme.spacing.sm,
+    borderRadius: Theme.borderRadius.md,
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
+    fontSize: Theme.typography.h4.fontSize,
+    fontWeight: Theme.typography.h4.fontWeight as any,
+    color: Theme.colors.textLight,
     textAlign: 'center',
-    flex: 1,
   },
   notificationButton: {
-    padding: 8,
+    padding: Theme.spacing.sm,
     position: 'relative',
+    borderRadius: Theme.borderRadius.md,
   },
   notificationBadge: {
     position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: '#FF3B30',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
+    top: 2,
+    right: 2,
+    backgroundColor: Theme.colors.error,
+    borderRadius: Theme.borderRadius.round,
+    minWidth: 18,
+    height: 18,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#000',
+    borderColor: Theme.colors.accent,
   },
   notificationBadgeText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: 'bold',
+    color: Theme.colors.textLight,
+    fontSize: 10,
+    fontWeight: '700',
   },
 });
