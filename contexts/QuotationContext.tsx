@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { Client, Address } from '../types';
+import React, { createContext, useContext, useEffect, useReducer } from 'react';
+import { Client } from '../types';
 
 interface Product { 
   id: string; 
